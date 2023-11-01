@@ -15,7 +15,6 @@ exports.JWT = {
         },
         (err, decoded) => {
           if (err) {
-            console.log(err);
             reject(err);
             return;
           }

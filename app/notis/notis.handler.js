@@ -1,3 +1,4 @@
+const AppError = require("../errors/app.error");
 const { getPageQ, pageReq } = require("../pages/pages");
 const { notiRes, NOTI_TYPE } = require("./notis.model");
 const { Notis } = require("./notis.repo");
@@ -26,8 +27,28 @@ exports.handlePOSTNotis = async function handlePOSTNotis(req, reply) {
     args: { userName: "Hello" },
     type: NOTI_TYPE.NEW_MESSAGE,
   });
-  reply.status(201)
+  reply.status(201);
   return {
     data: data,
   };
+};
+
+/**
+ *
+ * @param {import("fastify").FastifyRequest} req
+ * @param {import("fastify").FastifyReply reply
+ */
+exports.handleDELETENotisById = async function handleDELETENotisById(
+  req,
+  reply,
+) {
+  const { id } = req.params;
+  if (!id) {
+    throw new AppError(400, "invalid id");
+  }
+
+  await Notis.softDeleteById(id);
+
+  reply.status(200).send("");
+  return;
 };

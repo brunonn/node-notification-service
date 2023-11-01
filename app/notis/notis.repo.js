@@ -7,6 +7,7 @@ exports.Notis = {
   getAll(pageQ) {
     const q = DB("notis")
       .select("*")
+      .whereNull("deleted_at")
       .limit(pageQ.limit + 1)
       .offset((pageQ.page - 1) * pageQ.limit);
     return q;
@@ -29,5 +30,15 @@ exports.Notis = {
         args: data.args,
       })
       .returning("*");
+  },
+  /**
+   * @param {string} id
+   */
+  softDeleteById(id) {
+    return DB("notis")
+      .update({
+        deleted_at: new Date(),
+      })
+      .where("id", "=", id);
   },
 };

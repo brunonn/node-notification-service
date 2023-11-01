@@ -15,7 +15,7 @@ exports.up = async function (knex) {
     table.timestamp("sent_at");
     table.string("type").notNullable();
     table.json("args").notNullable();
-    table.string("user_id").notNullable();
+    table.string("user_id").notNullable().index();
   });
   await knex.schema.createTable("tokens", (table) => {
     table.string("device_id").primary();

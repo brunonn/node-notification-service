@@ -81,4 +81,45 @@ describe("Notis", () => {
     const json = res2.json();
     expect(json.data.length).toBe(1);
   });
+
+  it("should delete by id", async () => {
+    const id = "my-noti-id";
+    await DB("notis").insert({
+      type: "NEW_MESSAGE",
+      user_id: "1",
+      args: {},
+      scheduled_at: new Date(),
+      id,
+    });
+    const token = await JWT.sign({ id: "1" });
+    const resDelete = await app.inject({
+      method: "DELETE",
+      url: "/api/notifications/" + id,
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    });
+    expect(resDelete.statusCode).toBe(200);
+    const res = await app.inject({
+      method: "GET",
+      url: "/api/notifications",
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    });
+    const json = res.json();
+    expect(res.statusCode).toBe(200);
+    expect(json.data.length).toBe(0);
+  });
+  it("should require authenticated user to delete", async () => {
+    const token = "";
+    const res = await app.inject({
+      method: "DELETE",
+      url: "/api/notifications/" + "some-id",
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    });
+    expect(res.statusCode).toBe(401);
+  });
 });

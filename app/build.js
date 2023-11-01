@@ -1,5 +1,9 @@
 const fastify = require("fastify");
-const { handleGETNotis, handlePOSTNotis } = require("./notis/notis.handler");
+const {
+  handleGETNotis,
+  handlePOSTNotis,
+  handleDELETENotisById,
+} = require("./notis/notis.handler");
 const errorHandler = require("./errors/error.handler");
 const { handlePOSTTokens } = require("./tokens/tokens.handler");
 const { config } = require("../config");
@@ -15,6 +19,11 @@ exports.build = function build() {
 
   app.get("/api/notifications", { onRequest: JwtHook }, handleGETNotis);
   app.post("/api/notifications", { onRequest: JwtHook }, handlePOSTNotis);
+  app.delete(
+    "/api/notifications/:id",
+    { onRequest: JwtHook },
+    handleDELETENotisById,
+  );
   app.post("/api/fcm-tokens", handlePOSTTokens);
   app.post("/api/devices", { onRequest: JwtHook }, handlePOSTDevices);
   return app;
