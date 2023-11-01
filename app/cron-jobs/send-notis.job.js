@@ -8,9 +8,10 @@ async function deliverNotifications(notis) {
 
 async function sendNotifications() {
   const query = DB("notis")
+    .select(["id", "user_id"])
     .whereNull("sent_at")
     .whereRaw("scheduled_at < CURRENT_TIMESTAMP")
-    .whereRaw("scheduled_at < CURRENT_TIMESTAMP - interval '1 days'")
+    .whereRaw("scheduled_at > CURRENT_TIMESTAMP - interval '1 days'")
     .whereNull("deleted_at");
   const data = await query;
 
